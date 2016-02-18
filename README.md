@@ -1,0 +1,2 @@
+# aql
+Artifactory Query Language
