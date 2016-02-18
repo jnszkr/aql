@@ -1,0 +1,36 @@
+{
+  "name": "aql",
+  "version": "1.0.0",
+  "description": "Artifactory Query Language library",
+  "main": "aql.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jnszkr/aql.git"
+  },
+  "keywords": [
+    "aql",
+    "jfrog",
+    "artifactory",
+    "query",
+    "language",
+    "api"
+  ],
+  "author": "jnszkr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jnszkr/aql/issues"
+  },
+  "homepage": "https://github.com/jnszkr/aql#readme",
+  "devDependencies": {
+    "mocha": "^2.4.5"
+  },
+  "dependencies": {
+    "request-promise": "^2.0.1"
+  }
+}
