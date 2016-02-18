@@ -1,4 +1,4 @@
-# aql or Artifactory Query Language
+# Artifactory Query Language
 To read more about [AQL](https://www.jfrog.com/confluence/display/RTF/Artifactory+Query+Language).
 
 ## Set up connection
