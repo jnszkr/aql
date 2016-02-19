@@ -1,5 +1,5 @@
 {
-  "name": "aql",
+  "name": "jfrog-aql",
   "version": "1.0.0",
   "description": "Artifactory Query Language library",
   "main": "aql.js",
