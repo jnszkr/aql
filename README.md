@@ -29,12 +29,6 @@ Method in the config by default is `POST`. The default transform function is
 ```
    var aqlQuery = aql.items.find().include("*").limit(10).sort({$asc: ["repo"]});
 
-   aql.query(aqlQuery.query).then((data) => {
-         console.log(data);
-      });
-
-   // OR
-
    aql.query(aqlQuery).then((data) => {
          console.log(data);
       });
