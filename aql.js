@@ -9,9 +9,13 @@ class DomainQuery {
 
     constructor(domain) {
         this.domain = domain;
+        this.config = {
+            fields: []
+        };
+
         this.criteria = undefined;
         this.fields = [];
-        this.limitConfig = 100;
+        this.limitConfig = undefined;
         this.sortConfig = undefined;
     }
 
@@ -21,14 +25,15 @@ class DomainQuery {
      * @returns {String}
      */
     get query() {
-        let _fields = this.fields.length > 0 ? `.include(${this.fields.map(JSON.stringify).join(', ')})` : '',
-            _criterias = this.criteria ? JSON.stringify(this.criteria) : '',
-            _sort = this.sortConfig ? `.sort(${JSON.stringify(this.sortConfig)})` : '',
-            _limit = `.limit(${JSON.stringify(this.limitConfig)})`,
-            _offset = this.offsetConfig > 0 ? `.offset(${JSON.stringify(this.offsetConfig)})` : '';
+        let conf = this.config,
+            _fields = conf.fields.length > 0 ? `.include(${conf.fields.map(JSON.stringify).join(', ')})` : '',
+            _criteria = conf.criteria ? JSON.stringify(conf.criteria) : '',
+            _sort = conf.sort ? `.sort(${JSON.stringify(conf.sort)})` : '',
+            _limit = conf.limit ? `.limit(${JSON.stringify(conf.limit)})` : '',
+            _offset = conf.offset > 0 ? `.offset(${JSON.stringify(conf.offset)})` : '';
 
 
-        return `${this.domain}.find(${_criterias})${_fields}${_sort}${_offset}${_limit}`;
+        return `${this.domain}.find(${_criteria})${_fields}${_sort}${_offset}${_limit}`;
     }
 
     /**
@@ -38,7 +43,7 @@ class DomainQuery {
      * @returns {DomainQuery}
      */
     find(criteria) {
-        criteria && (this.criteria = Object.assign({}, criteria));
+        criteria && (this.config.criteria = Object.assign({}, criteria));
         return this;
     }
 
@@ -54,7 +59,7 @@ class DomainQuery {
             schema = ['string'];
 
         if (this._isValid(args, schema)) {
-            this.fields = this.fields.concat(args);
+            this.config.fields = this.config.fields.concat(args);
         } else {
             this._warn('Field configuration is not valid', args, schema);
         }
@@ -75,7 +80,7 @@ class DomainQuery {
         };
 
         if (this._isValid(sort, schema)) {
-            this.sortConfig = sort;
+            this.config.sort = sort;
         } else {
             this._warn('Sort configuration is not valid', sort, schema);
         }
@@ -92,7 +97,7 @@ class DomainQuery {
         let schema = 0;
 
         if (this._isValid(num, schema)) {
-            this.limitConfig = num;
+            this.config.limit = num;
         } else {
             this._warn('Limit configuration is not valid', num, schema);
         }
@@ -109,7 +114,7 @@ class DomainQuery {
         let schema = 0;
 
         if (this._isValid(num, schema)) {
-            this.offsetConfig = num;
+            this.config.offset = num;
         } else {
             this._warn('Offset configuration is not valid', num, schema);
         }
