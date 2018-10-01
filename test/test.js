@@ -33,5 +33,9 @@ describe('items', function () {
             // assert.deepEqual(aql.query("dafs"), err);
         });
 
+        it('should create a new DomainQuery instance for each query', () => {
+            assert.equal(aql.items    .find().include('name').query, 'items.find().include("name")');
+            assert.equal(aql.items    .find().include('repo').query, 'items.find().include("repo")');
+        });
     });
 });
