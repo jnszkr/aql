@@ -76,7 +76,7 @@ class DomainQuery {
 
         let schema = {
             $asc: ['string'],
-            $dsc: ['string']
+            $desc: ['string']
         };
 
         if (this._isValid(sort, schema)) {
