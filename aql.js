@@ -168,9 +168,15 @@ class DomainQuery {
 }
 
 module.exports = {
-    items: new DomainQuery('items'),
-    builds: new DomainQuery('builds'),
-    archives: new DomainQuery('archive.entries'),
+    get items() {
+        return new DomainQuery('items');
+    },
+    get builds() {
+        return new DomainQuery('builds');
+    },
+    get archives() {
+        return new DomainQuery('archive.entries');
+    },
     config: conf => {
         let def = Object.assign({
             method: 'POST',
