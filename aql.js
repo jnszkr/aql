@@ -11,11 +11,6 @@ class DomainQuery {
     this.config = {
       fields: []
     };
-
-    this.criteria = undefined;
-    this.fields = [];
-    this.limitConfig = undefined;
-    this.sortConfig = undefined;
   }
 
   /**
@@ -24,16 +19,15 @@ class DomainQuery {
    * @returns {String}
    */
   get query() {
-    let conf = this.config,
-      _fields =
-        conf.fields.length > 0
-          ? `.include(${conf.fields.map(JSON.stringify).join(", ")})`
-          : "",
-      _criteria = conf.criteria ? JSON.stringify(conf.criteria) : "",
-      _sort = conf.sort ? `.sort(${JSON.stringify(conf.sort)})` : "",
-      _limit = conf.limit ? `.limit(${JSON.stringify(conf.limit)})` : "",
-      _offset =
-        conf.offset > 0 ? `.offset(${JSON.stringify(conf.offset)})` : "";
+    const { fields, criteria, sort, limit, offset } = this.config;
+    const _fields =
+      fields.length > 0
+        ? `.include(${fields.map(JSON.stringify).join(", ")})`
+        : "";
+    const _criteria = criteria ? JSON.stringify(criteria) : "";
+    const _sort = sort ? `.sort(${JSON.stringify(sort)})` : "";
+    const _limit = limit ? `.limit(${JSON.stringify(limit)})` : "";
+    const _offset = offset > 0 ? `.offset(${JSON.stringify(offset)})` : "";
 
     return `${
       this.domain
@@ -59,14 +53,19 @@ class DomainQuery {
    * @returns {DomainQuery}
    */
   include() {
-    var args =
-        arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments),
-      schema = ["string"];
+    const args =
+      arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments);
+    const schema = ["string"];
 
-    if (this._isValid(args, schema)) {
-      this.config.fields = this.config.fields.concat(args);
-    } else {
+    if (!this._isValid(args, schema)) {
       this._warn("Field configuration is not valid", args, schema);
+    }
+
+    for (let i = 0; i < args.length; i++) {
+      if (this.config.fields.indexOf(args[i]) === -1)
+        this.config.fields.push(
+          typeof args[i] !== "string" ? JSON.stringify(args[i]) : args[i]
+        );
     }
 
     return this;
@@ -98,7 +97,7 @@ class DomainQuery {
    * @returns {DomainQuery}
    */
   limit(num) {
-    let schema = 0;
+    const schema = 0;
 
     if (this._isValid(num, schema)) {
       this.config.limit = num;
@@ -115,7 +114,7 @@ class DomainQuery {
    * @returns {DomainQuery}
    */
   offset(num) {
-    let schema = 0;
+    const schema = 0;
 
     if (this._isValid(num, schema)) {
       this.config.offset = num;
@@ -135,8 +134,8 @@ class DomainQuery {
    * @private
    */
   _isValid(obj, schema) {
-    let typeofObj = Array.isArray(obj) ? "array" : typeof obj,
-      typeofSchema = Array.isArray(schema) ? "array" : typeof schema;
+    const typeofObj = Array.isArray(obj) ? "array" : typeof obj;
+    const typeofSchema = Array.isArray(schema) ? "array" : typeof schema;
 
     if (typeofObj === typeofSchema) {
       if (["string", "boolean", "number"].indexOf(typeofObj) > -1) {
@@ -145,8 +144,8 @@ class DomainQuery {
         return obj.every(elem => this._isValid(elem, schema[0]));
       } else if (typeofObj === "object") {
         return Object.keys(obj).every(key => {
-          let isInSchema = Object.keys(schema).indexOf(key) > -1,
-            isValid = this._isValid(obj[key], schema[key]);
+          const isInSchema = Object.keys(schema).indexOf(key) > -1;
+          const isValid = this._isValid(obj[key], schema[key]);
           return isInSchema && isValid;
         });
       }
@@ -193,6 +192,10 @@ module.exports = {
   /**
    * Run query on your artifactory.
    *
+   * ```javascript
+   *    aql.query(aql.items.find({}))
+   * ```
+   *
    * @param {DomainQuery} query
    * @returns {Promise}
    */
@@ -203,5 +206,9 @@ module.exports = {
       return Promise.reject("Invalid query parameter!");
     }
     return this._request({ body: query }).promise();
-  }
+  },
+  /**
+   * Domain query builder.
+   */
+  DomainQuery
 };

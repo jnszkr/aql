@@ -1,7 +1,7 @@
 "use strict";
 
-var assert = require("assert"),
-  aql = require("../aql");
+const assert = require("assert");
+const aql = require("../aql");
 
 describe("items", function() {
   describe("#find()", function() {
@@ -24,6 +24,22 @@ describe("items", function() {
       assert.equal(
         aql.archives.find(criteria).query,
         'archive.entries.find({"repo":"abc"})'
+      );
+    });
+  });
+
+  describe("#include()", () => {
+    it("should include params", () => {
+      assert.equal(
+        aql.items.find().include("o1g", "2farku").query,
+        'items.find().include("o1g", "2farku")'
+      );
+    });
+
+    it("should include param once", () => {
+      assert.equal(
+        aql.items.find().include("name", "name", "name").query,
+        'items.find().include("name")'
       );
     });
   });
